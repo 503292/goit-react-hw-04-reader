@@ -28,12 +28,15 @@ class Reader extends Component {
 
   render() {
     const { children } = this.props;
+    const { currentIdx, totalPublications } = this.state;
     return (
       <ReaderContext.Provider
         value={{
           ...this.state,
           onPrev: this.handlePrev,
           onNext: this.handleNext,
+          currentIdx,
+          totalPublications,
         }}
       >
         <div className="reader">{children}</div>
