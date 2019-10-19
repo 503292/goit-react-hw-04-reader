@@ -1,20 +1,21 @@
 import React from 'react';
-import publications from '../publications.json';
-import Publication from './Publication/Publication';
-import Counter from './Counter/Counter';
-import Controls from './Controls/Controls';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Reader from './Reader/Reader';
+
+import './App.module.css';
 
 const App = () => {
   return (
     <>
-      <Reader items={publications}>
-        <Publication />
-        <Counter />
-        <Controls />
-        {/* <ProgressBar /> */}
-      </Reader>
-      ,
+      <Switch>
+        <Route path="/reader" component={Reader} />
+        <Redirect
+          to={{
+            pathname: '/reader',
+            search: '?item=1',
+          }}
+        />
+      </Switch>
     </>
   );
 };

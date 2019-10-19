@@ -1,56 +1,58 @@
-import React, { Component, createContext } from 'react';
-import PropTypes from 'prop-types';
+/* eslint-disable react/prop-types */
+import React, { Component } from 'react';
+import Counter from './Counter/Counter';
+import Publication from './Publication/Publication';
+import publications from '../../publications.json';
 
-export const ReaderContext = createContext();
+import css from './Reader.module.css';
 
 class Reader extends Component {
-  static Consumer = ReaderContext.Consumer;
+  state = { value: 0 };
 
-  state = {
-    currentIdx: 0,
-    publication: this.props.items[0],
-    totalPublications: this.props.items.length,
-  };
+  componentDidUpdate(prevProps, prevState) {
+    const { history, location } = this.props;
+    const { value } = this.state;
 
-  handlePrev = () => {
+    if (prevState.value !== value) {
+      history.push({
+        ...location,
+        search: `?item=${value + 1}`,
+      });
+    }
+  }
+
+  handleIncrement = () => {
+    if (this.state.value === publications.length - 1) {
+      return;
+    }
     this.setState(state => ({
-      currentIdx: state.currentIdx - 1,
-      publication: this.props.items[state.currentIdx - 1],
+      value: state.value + 1,
     }));
   };
 
-  handleNext = () => {
+  handleDecrement = () => {
+    if (this.state.value === 0) {
+      return;
+    }
     this.setState(state => ({
-      currentIdx: state.currentIdx + 1,
-      publication: this.props.items[state.currentIdx + 1],
+      value: state.value - 1,
     }));
   };
 
   render() {
-    const { children } = this.props;
-    const { currentIdx, totalPublications } = this.state;
+    const { value } = this.state;
     return (
-      <ReaderContext.Provider
-        value={{
-          ...this.state,
-          onPrev: this.handlePrev,
-          onNext: this.handleNext,
-          currentIdx,
-          totalPublications,
-        }}
-      >
-        <div className="reader">{children}</div>
-      </ReaderContext.Provider>
+      <div className={css.reader}>
+        <Counter
+          value={value}
+          length={publications.length}
+          handleIncrement={this.handleIncrement}
+          handleDecrement={this.handleDecrement}
+        />
+        <Publication items={publications[value]} />
+      </div>
     );
   }
 }
-
-Reader.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).isRequired,
-  items: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-};
 
 export default Reader;
