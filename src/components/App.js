@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import Reader from './Reader/Reader';
+import routes from '../routes';
 
 import './App.module.css';
 
@@ -8,7 +8,9 @@ const App = () => {
   return (
     <>
       <Switch>
-        <Route path="/reader" component={Reader} />
+        {routes.map(route => (
+          <Route key={route.path} {...route} />
+        ))}
         <Redirect
           to={{
             pathname: '/reader',
